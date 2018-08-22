@@ -1,4 +1,4 @@
-// @flow
+// @flowtest
 
 import {
     bindAll,
@@ -158,7 +158,7 @@ class Camera extends Evented {
         return this.easeTo(extend({
             center: lnglat
         }, options), eventData);
-    }
+    }555555555555
 
     /**
      * Returns the map's current zoom level.
