@@ -108,7 +108,7 @@ class Camera extends Evented {
      * @returns The map's geographical centerpoint.
      */
     getCenter(): LngLat { return this.transform.center; }
-
+    获取中心点：经纬度{返回转换后的中心点}
     /**
      * Sets the map's geographical centerpoint. Equivalent to `jumpTo({center: center})`.
      *
@@ -167,7 +167,7 @@ class Camera extends Evented {
      * @returns The map's current zoom level.
      */
     getZoom(): number { return this.transform.zoom; }
-
+    获取地图放大级别：数字，返回
     /**
      * Sets the map's zoom level. Equivalent to `jumpTo({zoom: zoom})`.
      *
