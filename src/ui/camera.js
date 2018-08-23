@@ -108,7 +108,7 @@ class Camera extends Evented {
      * @returns The map's geographical centerpoint.
      */
     getCenter(): LngLat { return this.transform.center; }
-
+    获取地图中心点：地理坐标经纬度格式 {返回该坐标系下的地图中心点}
     /**
      * Sets the map's geographical centerpoint. Equivalent to `jumpTo({center: center})`.
      *
@@ -125,7 +125,9 @@ class Camera extends Evented {
     setCenter(center: LngLatLike, eventData?: Object) {
         return this.jumpTo({center: center}, eventData);
     }
-
+    设置地图中心点（中心点：经纬度格式，该方法触发后的：结构体）{
+        返回 
+    }
     /**
      * Pans the map by the specified offest.
      *
