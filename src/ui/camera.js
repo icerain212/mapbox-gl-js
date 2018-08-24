@@ -1,6 +1,6 @@
 // @flow
 
-import {
+import {getCenter()
     bindAll,
     extend,
     deepEqual,
@@ -107,8 +107,8 @@ class Camera extends Evented {
      * @memberof Map#
      * @returns The map's geographical centerpoint.
      */
-    getCenter(): LngLat { return this.transform.center; }
-
+   
+    返回地图中心点：地理坐标{返回地图的中心点}
     /**
      * Sets the map's geographical centerpoint. Equivalent to `jumpTo({center: center})`.
      *
@@ -122,10 +122,11 @@ class Camera extends Evented {
      * map.setCenter([-74, 38]);
      * @see [Move symbol with the keyboard](https://www.mapbox.com/mapbox-gl-js/example/rotating-controllable-marker/)
      */
-    setCenter(center: LngLatLike, eventData?: Object) {
+    设置地图中心点(中心点: 经纬度格式, 该方法触发后?: 结构体) {
         return this.jumpTo({center: center}, eventData);
+        返回跳转到的中心点
     }
-
+    
     /**
      * Pans the map by the specified offest.
      *
@@ -138,13 +139,15 @@ class Camera extends Evented {
      * @returns {Map} `this`
      * @see [Navigate the map with game-like controls](https://www.mapbox.com/mapbox-gl-js/example/game-controls/)
      */
-    panBy(offset: PointLike, options?: AnimationOptions, eventData?: Object) {
+    平移(偏移量: PointLike, options?: AnimationOptions, eventData?: Object) {
         offset = Point.convert(offset).mult(-1);
+        偏移量 = 坐标点
         return this.panTo(this.transform.center, extend({offset}, options), eventData);
     }
 
     /**
      * Pans the map to the specified location, with an animated transition.
+     * 通过动态转换，将地图平移到特定位置
      *
      * @memberof Map#
      * @param lnglat The location to pan the map to.
@@ -154,12 +157,12 @@ class Camera extends Evented {
      * @fires moveend
      * @returns {Map} `this`
      */
-    panTo(lnglat: LngLatLike, options?: AnimationOptions, eventData?: Object) {
+    平移到(地图平移到的位置: 经纬度格式, options?: AnimationOptions, eventData?: Object) {
         return this.easeTo(extend({
             center: lnglat
         }, options), eventData);
     }
-
+    
     /**
      * Returns the map's current zoom level.
      *
@@ -167,7 +170,7 @@ class Camera extends Evented {
      * @returns The map's current zoom level.
      */
     getZoom(): number { return this.transform.zoom; }
-
+    获得缩放级别：级别{返回 当前缩放级别}
     /**
      * Sets the map's zoom level. Equivalent to `jumpTo({zoom: zoom})`.
      *
@@ -189,7 +192,7 @@ class Camera extends Evented {
         this.jumpTo({zoom: zoom}, eventData);
         return this;
     }
-
+    设置缩放级别：
     /**
      * Zooms the map to the specified zoom level, with an animated transition.
      *
@@ -210,7 +213,7 @@ class Camera extends Evented {
             zoom: zoom
         }, options), eventData);
     }
-
+    缩放到（）
     /**
      * Increases the map's zoom level by 1.
      *
@@ -229,7 +232,7 @@ class Camera extends Evented {
         this.zoomTo(this.getZoom() + 1, options, eventData);
         return this;
     }
-
+    缩小
     /**
      * Decreases the map's zoom level by 1.
      *
@@ -248,7 +251,7 @@ class Camera extends Evented {
         this.zoomTo(this.getZoom() - 1, options, eventData);
         return this;
     }
-
+    放大
     /**
      * Returns the map's current bearing. The bearing is the compass direction that is \"up\"; for example, a bearing
      * of 90° orients the map so that east is up.
@@ -297,7 +300,7 @@ class Camera extends Evented {
             bearing: bearing
         }, options), eventData);
     }
-
+    旋转
     /**
      * Rotates the map so that north is up (0° bearing), with an animated transition.
      *
