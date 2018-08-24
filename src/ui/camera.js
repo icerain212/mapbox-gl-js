@@ -55,7 +55,8 @@ export type CameraOptions = {
  * @property {boolean} animate If `false`, no animation will occur.
  */
 export type AnimationOptions = {
-    duration?: number,
+    duration?: number,getCenter()
+
     easing?: (number) => number,
     offset?: PointLike,
     animate?: boolean
@@ -107,8 +108,7 @@ class Camera extends Evented {
      * @memberof Map#
      * @returns The map's geographical centerpoint.
      */
-    getCenter(): LngLat { return this.transform.center; }
-
+    得到地图中心点：地理坐标格式{返回地图的中心点}
     /**
      * Sets the map's geographical centerpoint. Equivalent to `jumpTo({center: center})`.
      *
@@ -122,10 +122,9 @@ class Camera extends Evented {
      * map.setCenter([-74, 38]);
      * @see [Move symbol with the keyboard](https://www.mapbox.com/mapbox-gl-js/example/rotating-controllable-marker/)
      */
-    setCenter(center: LngLatLike, eventData?: Object) {
-        return this.jumpTo({center: center}, eventData);
+    设置地图中心点(中心点: 经纬度数组格式, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
+        返回 跳转到新中心点的地图对象
     }
-
     /**
      * Pans the map by the specified offest.
      *
@@ -138,11 +137,11 @@ class Camera extends Evented {
      * @returns {Map} `this`
      * @see [Navigate the map with game-like controls](https://www.mapbox.com/mapbox-gl-js/example/game-controls/)
      */
-    panBy(offset: PointLike, options?: AnimationOptions, eventData?: Object) {
-        offset = Point.convert(offset).mult(-1);
-        return this.panTo(this.transform.center, extend({offset}, options), eventData);
+    平移(偏移量： 点格式, 参数项?: 动画参数项, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
+        偏移量= 偏移量转换为几何点格式后，将这个点的x和y坐标乘以一个因子，产生一个新的点。
+        返回按照偏移量平移后的地图对象
     }
-
+    )
     /**
      * Pans the map to the specified location, with an animated transition.
      *
@@ -154,10 +153,11 @@ class Camera extends Evented {
      * @fires moveend
      * @returns {Map} `this`
      */
-    panTo(lnglat: LngLatLike, options?: AnimationOptions, eventData?: Object) {
+    平移(lnglat: 经纬度数组格式, options?:  动画参数项, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
         return this.easeTo(extend({
             center: lnglat
         }, options), eventData);
+        返回移动到特定位置后的地图对象
     }
 
     /**
@@ -166,14 +166,14 @@ class Camera extends Evented {
      * @memberof Map#
      * @returns The map's current zoom level.
      */
-    getZoom(): number { return this.transform.zoom; }
+    获取地图当前比例尺级别: 数字 { 返回当前缩放级别 }
 
     /**
      * Sets the map's zoom level. Equivalent to `jumpTo({zoom: zoom})`.
      *
      * @memberof Map#
      * @param zoom The zoom level to set (0-20).
-     * @param eventData Additional properties to be added to event objects of events triggered by this method.
+     * @param eventData Additional prope缩放级别rties to be added to event objects of events triggered by this method.
      * @fires movestart
      * @fires zoomstart
      * @fires move
@@ -185,9 +185,9 @@ class Camera extends Evented {
      * // zoom the map to 5
      * map.setZoom(5);
      */
-    setZoom(zoom: number, eventData?: Object) {
+    设置地图缩放级别(缩放: 数字型, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
         this.jumpTo({zoom: zoom}, eventData);
-        return this;
+        返回缩放后的新地图对象
     }
 
     /**
@@ -205,10 +205,11 @@ class Camera extends Evented {
      * @fires zoomend
      * @returns {Map} `this`
      */
-    zoomTo(zoom: number, options: ? AnimationOptions, eventData?: Object) {
+    缩放到(缩放级别: 数字型, options: ? 动画参数项, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
         return this.easeTo(extend({
             zoom: zoom
         }, options), eventData);
+        返回经过动态缩放变换后的地图对象
     }
 
     /**
@@ -225,11 +226,12 @@ class Camera extends Evented {
      * @fires zoomend
      * @returns {Map} `this`
      */
-    zoomIn(options?: AnimationOptions, eventData?: Object) {
+    放大(参数项?: 动画参数项, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
         this.zoomTo(this.getZoom() + 1, options, eventData);
-        return this;
+        返回放大到当前比例尺大一级别的地图对象
+       
     }
-
+   
     /**
      * Decreases the map's zoom level by 1.
      *
@@ -244,8 +246,8 @@ class Camera extends Evented {
      * @fires zoomend
      * @returns {Map} `this`
      */
-    zoomOut(options?: AnimationOptions, eventData?: Object) {
-        this.zoomTo(this.getZoom() - 1, options, eventData);
+   缩小(参数项?: 动画参数项, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
+       返回缩小到当前比例尺小一级别的地图对象
         return this;
     }
 
@@ -258,7 +260,7 @@ class Camera extends Evented {
      * @see [Navigate the map with game-like controls](https://www.mapbox.com/mapbox-gl-js/example/game-controls/)
      */
     getBearing(): number { return this.transform.bearing; }
-
+    获取地图当前的方位（）：数字型{返回变换后的地图方位}
     /**
      * Sets the map's bearing (rotation). The bearing is the compass direction that is \"up\"; for example, a bearing
      * of 90° orients the map so that east is up.
@@ -279,7 +281,10 @@ class Camera extends Evented {
         this.jumpTo({bearing: bearing}, eventData);
         return this;
     }
-
+  设置地图方位（地图方位：数字型, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体）
+  {
+      返回变换地图方位后的地图对象
+  }
     /**
      * Rotates the map to the specified bearing, with an animated transition. The bearing is the compass direction
      * that is \"up\"; for example, a bearing of 90° orients the map so that east is up.
@@ -292,10 +297,12 @@ class Camera extends Evented {
      * @fires moveend
      * @returns {Map} `this`
      */
-    rotateTo(bearing: number, options?: AnimationOptions, eventData?: Object) {
+    旋转地图（地图方位：数字型, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体）
+    {
         return this.easeTo(extend({
             bearing: bearing
         }, options), eventData);
+         返回旋转地图方位后的地图对象
     }
 
     /**
@@ -308,9 +315,10 @@ class Camera extends Evented {
      * @fires moveend
      * @returns {Map} `this`
      */
-    resetNorth(options?: AnimationOptions, eventData?: Object) {
+   地图旋转至正北方向(参数项?: 动画参数项, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
         this.rotateTo(0, extend({duration: 1000}, options), eventData);
         return this;
+       返回旋转至正北方向后的对象
     }
 
     /**
@@ -324,11 +332,12 @@ class Camera extends Evented {
      * @fires moveend
      * @returns {Map} `this`
      */
-    snapToNorth(options?: AnimationOptions, eventData?: Object) {
+    地图按至正北方向(参数项?: 动画参数项, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
         if (Math.abs(this.getBearing()) < this._bearingSnap) {
             return this.resetNorth(options, eventData);
         }
         return this;
+        如果当前地图方位足够接近（即在方位Snap阈值内），则按下地图至正北方向（0°方位）。
     }
 
     /**
@@ -338,7 +347,7 @@ class Camera extends Evented {
      * @returns The map's current pitch, measured in degrees away from the plane of the screen.
      */
     getPitch(): number { return this.transform.pitch; }
-
+    返回地图的当前倾斜角:数字型{返回该地图的倾斜角}
     /**
      * Sets the map's pitch (tilt). Equivalent to `jumpTo({pitch: pitch})`.
      *
@@ -350,9 +359,10 @@ class Camera extends Evented {
      * @fires moveend
      * @returns {Map} `this`
      */
-    setPitch(pitch: number, eventData?: Object) {
+    设置地图倾斜角（倾斜角：数字型, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体) {
         this.jumpTo({pitch: pitch}, eventData);
         return this;
+       返回具备新倾斜角的地图对象;
     }
 
     /**
@@ -440,6 +450,7 @@ class Camera extends Evented {
 
     /**
      * Pans and zooms the map to contain its visible area within the specified geographical bounds.
+     * 在指定的地理范围内平移和缩放地图一边包含其可见区域。
      * This function will also reset the map's bearing to 0 if bearing is nonzero.
      *
      * @memberof Map#
@@ -464,9 +475,9 @@ class Camera extends Evented {
      * });
      * @see [Fit a map to a bounding box](https://www.mapbox.com/mapbox-gl-js/example/fitbounds/)
      */
-    fitBounds(bounds: LngLatBoundsLike, options?: AnimationOptions & CameraOptions, eventData?: Object) {
+    拟合边界(边界: 由经纬度格式的正北正南点位定义的边界, 参数项?: 动画参数项&相机视角参数, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体)) {
         const calculatedOptions = this.cameraForBounds(bounds, options);
-
+        常量 计算参数 = 
         // cameraForBounds warns + returns undefined if unable to fit:
         if (!calculatedOptions) return this;
 
@@ -475,8 +486,9 @@ class Camera extends Evented {
         return options.linear ?
             this.easeTo(options, eventData) :
             this.flyTo(options, eventData);
+        返回参数中的所使用的动画选项参数
     }
-
+    
     /**
      * Changes any combination of center, zoom, bearing, and pitch, without
      * an animated transition. The map will retain its current values for any
