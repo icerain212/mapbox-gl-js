@@ -374,17 +374,19 @@ class Camera extends Evented {
      * });
      */
     cameraForBounds(bounds: LngLatBoundsLike, options?: CameraOptions): void | CameraOptions & AnimationOptions {
+        边界视角(边界:由经纬度格式的正北正南点位定义的边界，选项: 视角参数): void | 视角参数 & 动画效果选项 {
+        通过定义边距,偏移量和最大缩放级别定义扩展参数选项;
         options = extend({
             padding: {
                 top: 0,
-                bottom: 0,
+                botto
                 right: 0,
                 left: 0
             },
             offset: [0, 0],
             maxZoom: this.transform.maxZoom
         }, options);
-
+    
         if (typeof options.padding === 'number') {
             const p = options.padding;
             options.padding = {
@@ -404,18 +406,19 @@ class Camera extends Evented {
             );
             return;
         }
-
+    参数选项中的padding必须是正数,并且是带有上下左右关键值的结构体
         bounds = LngLatBounds.convert(bounds);
 
         // we separate the passed padding option into two parts, the part that does not affect the map's center
         // (lateral and vertical padding), and the part that does (paddingOffset). We add the padding offset
         // to the options `offset` object where it can alter the map's center in the subsequent calls to
         // `easeTo` and `flyTo`.
+            通过上下左右的边距计算偏移量参数，并且将偏移量转换为地理点坐标
         const paddingOffset = [(options.padding.left - options.padding.right) / 2, (options.padding.top - options.padding.bottom) / 2],
             lateralPadding = Math.min(options.padding.right, options.padding.left),
             verticalPadding = Math.min(options.padding.top, options.padding.bottom);
         options.offset = [options.offset[0] + paddingOffset[0], options.offset[1] + paddingOffset[1]];
-
+       
         const offset = Point.convert(options.offset),
             tr = this.transform,
             nw = tr.project(bounds.getNorthWest()),
@@ -440,6 +443,7 @@ class Camera extends Evented {
 
     /**
      * Pans and zooms the map to contain its visible area within the specified geographical bounds.
+     * 平移和缩放地图到指定的地理范围内一边以便包含其可见区域。
      * This function will also reset the map's bearing to 0 if bearing is nonzero.
      *
      * @memberof Map#
@@ -464,9 +468,10 @@ class Camera extends Evented {
      * });
      * @see [Fit a map to a bounding box](https://www.mapbox.com/mapbox-gl-js/example/fitbounds/)
      */
+        
     fitBounds(bounds: LngLatBoundsLike, options?: AnimationOptions & CameraOptions, eventData?: Object) {
+    拟合边界(边界: 由经纬度格式的正北正南点位定义的边界, 参数选项?: 动画参数项&相机视角参数, 添加到由该方法触发的事件的事件对象中的附加属性。?: 结构体)) {
         const calculatedOptions = this.cameraForBounds(bounds, options);
-
         // cameraForBounds warns + returns undefined if unable to fit:
         if (!calculatedOptions) return this;
 
@@ -497,48 +502,49 @@ class Camera extends Evented {
      * @fires pitchend
      * @returns {Map} `this`
      */
+     无需动画过渡改变中心、缩放、方位和倾斜角度的组合.地图将保留当前选项中未指定的当前值
     jumpTo(options: CameraOptions, eventData?: Object) {
         this.stop();
-
+        定义常量 变换结构体
         const tr = this.transform;
         let zoomChanged = false,
             bearingChanged = false,
             pitchChanged = false;
-
+        给结构体赋缩放值
         if ('zoom' in options && tr.zoom !== +options.zoom) {
             zoomChanged = true;
             tr.zoom = +options.zoom;
         }
-
+       给结构体赋地图中心点值
         if (options.center !== undefined) {
             tr.center = LngLat.convert(options.center);
         }
-
+       给结构体赋方位角值
         if ('bearing' in options && tr.bearing !== +options.bearing) {
             bearingChanged = true;
             tr.bearing = +options.bearing;
         }
-
+         给结构体添加倾斜角
         if ('pitch' in options && tr.pitch !== +options.pitch) {
             pitchChanged = true;
             tr.pitch = +options.pitch;
         }
-
+        移动触发事件
         this.fire(new Event('movestart', eventData))
             .fire(new Event('move', eventData));
-
+        放大事件开始结束事件触发
         if (zoomChanged) {
             this.fire(new Event('zoomstart', eventData))
                 .fire(new Event('zoom', eventData))
                 .fire(new Event('zoomend', eventData));
         }
-
+        方位角变化事件触发
         if (bearingChanged) {
             this.fire(new Event('rotatestart', eventData))
                 .fire(new Event('rotate', eventData))
                 .fire(new Event('rotateend', eventData));
         }
-
+        倾斜角事件触发
         if (pitchChanged) {
             this.fire(new Event('pitchstart', eventData))
                 .fire(new Event('pitch', eventData))
@@ -570,9 +576,10 @@ class Camera extends Evented {
      * @returns {Map} `this`
      * @see [Navigate the map with game-like controls](https://www.mapbox.com/mapbox-gl-js/example/game-controls/)
      */
+      通过动画过渡改变中心、缩放、方位和倾斜角度的组合.地图将保留当前选项中未指定的当前值
     easeTo(options: CameraOptions & AnimationOptions & {delayEndEvents?: number}, eventData?: Object) {
         this.stop();
-
+       拓展定义参数选项的偏移、持续事件和过渡
         options = extend({
             offset: [0, 0],
             duration: 500,
@@ -649,7 +656,7 @@ class Camera extends Evented {
 
         return this;
     }
-
+     准备过渡事件:移动，缩放，旋转和倾斜开始触发事件
     _prepareEase(eventData?: Object, noMoveStart: boolean) {
         this._moving = true;
 
@@ -666,7 +673,7 @@ class Camera extends Evented {
             this.fire(new Event('pitchstart', eventData));
         }
     }
-
+     移动触发事件：移动，缩放，旋转和倾斜触发事件
     _fireMoveEvents(eventData?: Object) {
         this.fire(new Event('move', eventData));
         if (this._zooming) {
@@ -679,7 +686,7 @@ class Camera extends Evented {
             this.fire(new Event('pitch', eventData));
         }
     }
-
+    过渡后的事件
     _afterEase(eventData?: Object) {
         const wasZooming = this._zooming;
         const wasRotating = this._rotating;
@@ -756,6 +763,7 @@ class Camera extends Evented {
      * @see [Slowly fly to a location](https://www.mapbox.com/mapbox-gl-js/example/flyto-options/)
      * @see [Fly to a location based on scroll position](https://www.mapbox.com/mapbox-gl-js/example/scroll-fly-to/)
      */
+    沿飞行曲线动画改变中心、变焦、方位和音高的任意组合，该动画无缝地结合了缩放和平移，即使穿越了很长的距离，仍然帮助用户保持方位，
     flyTo(options: Object, eventData?: Object) {
         // This method implements an “optimal path” animation, as detailed in:
         //
@@ -907,7 +915,9 @@ class Camera extends Evented {
      *
      * @memberof Map#
      * @returns {Map} `this`
+     *
      */
+    停止任何正在进行的动画转换
     stop(): this {
         if (this._easeFrameId) {
             this._cancelRenderFrame(this._easeFrameId);
